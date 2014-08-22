@@ -1,3 +1,4 @@
+
 // SUMMARY
 //   * Your goal is to 'buy' a path of tiles from left to right.
 //   * One group of tiles is available for bidding each turn.
@@ -12,6 +13,12 @@
 // HINT: the default code for the other team is going for this path too!
 // here we define 3 possible paths
 // we will favour the path with a lower number
+
+
+/**
+ * access to how much remaining gold?
+ */
+
 var path_1 = [[0,0], [1,1], [2,2], [3,3], [4,4], [5,5], [6,6]];
 var path_2 = [[0,0], [1,0], [2,0], [3,0], [4,0], [5,0], [6,0]];
 var path_3 = [[0,1], [1,1], [2,1], [3,1], [4,1], [5,1], [6,1]];
@@ -21,6 +28,41 @@ var tiles = this.tileGroups[tileGroupLetter];  // tiles available this turn
 var wanted_tile = null;
 var tile, coordinates, i, j;
 var k;
+
+console.log('test');
+
+/**
+ * returns true if same col, false if not
+ */
+var isSameCol = function(tile1, tile2) {
+  if(tile1[0] == tile2[0]) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * returns true if same row, false if not
+ */
+var isSameRow = function(tile1, tile2) {
+  if(tile1[1] == tile2[1]) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+var isWantedTile = function(tile) {
+  tile
+}
+
+// for blocking other player
+// I don't think this is possible
+//var isEnemyBelow = functon(my_tile) {
+  //return (tile.owner);
+//}
+
 
 OUTER:
 for (i = 0; i < tiles.length; i++) {
@@ -50,7 +92,7 @@ if(!wanted_tile) {
 //////////////////////////////////////////////////////////////////////////////
 // 2. Choose your bid price. You only pay and win the tile if your bid wins.
 
-var my_bid = Math.floor(1 + Math.random() * 10);
+//var my_bid = Math.floor(1 + Math.random() * 10);
 var my_bid = (5 - path_num) * 2;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -61,4 +103,3 @@ return {gold: my_bid, desiredTile: wanted_tile};
 
 // -- FOR MORE INFO, READ THE GUIDE -- //
 //         It's at the top bar.
-
