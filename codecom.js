@@ -59,19 +59,29 @@ var isInTargetRows = function(tile) {
   }
 };
 
-  //if(!isInTargetRows(tile)) {
-    //return false;
-  //}
-  //for(path_num = 0; path_num < all_paths.length; path_num++) {
-    //for(j = 0; j < all_paths[path_num].length; j++) {
-      //coordinates = all_paths[path_num][j];
-      //if (coordinates[1] === tile.x && coordinates[1] === tile.y) {
-        //// We have a match!
-        //wanted_tile = tile;
-        //break OUTER;
-      //}
-    //}
-  //}
+var getTile = this.getTile;
+var isWantedTile = function(tile) {
+  if(tile.y == 1) {
+    // try this.parent?
+    if(getTile(tile.x, 2).owner === null) {
+      return true;
+    } else if(getTile(tile.x, 2).owner == 'humans') {
+      return false;
+    } else { // if(getTile(tile.x, 2).owner === 'ogres') {}
+      return true;
+    }
+  } else if(tile.y == 2) {
+    if(getTile(tile.x, 1).owner === null) {
+      return true;
+    } else if(getTile(tile.x, 1).owner === 'humans') {
+      return false;
+    } else { // if(getTile(tile.x, 1).owner === 'ogres') {}
+      return true;
+    }
+  } else {
+    return false;
+  }
+};
 
 // for blocking other player
 var isEnemyBelow = function(tile) {
@@ -88,42 +98,18 @@ for (i = 0; i < tiles.length; i++) {
   tile = tiles[i];
   if (tile.owner) continue;  // can't buy a tile that's been bought
 
-  if(tile.y == 1) {
-    if(this.getTile(tile.x, 2).owner === null) {
-      wanted_tile = tile;
-      break OUTER;
-    } else if(this.getTile(tile.x, 2).owner == 'humans') {
-      this.highlightTile(tile);
-    } else { // if(this.getTile(tile.x, 2).owner === 'ogres') {}
-      wanted_tile = tile;
-      break OUTER;
-    }
-  } else if(tile.y == 2) {
-    if(this.getTile(tile.x, 1).owner === null) {
-      wanted_tile = tile;
-      break OUTER;
-    } else if(this.getTile(tile.x, 1).owner === 'humans') {
-      this.highlightTile(tile);
-    } else { // if(this.getTile(tile.x, 1).owner === 'ogres') {}
-      wanted_tile = tile;
-      break OUTER;
-    }
+  this.debug('hi');
+  if(isWantedTile(tile) == true) {
+    wanted_tile = tile;
+    break OUTER;
   } else {
     this.highlightTile(tile);
   }
 
-  //this.debug('hi');
-  //if(isWantedTile(tile) == true) {
-    //wanted_tile = tile;
-    //break OUTER;
-  //} else {
-    //this.highlightTile(tile);
-  //}
-
 }
 
 /*
-
+this.turns
 */
 
 // If none of the tiles you want are available, skip this round.
@@ -153,3 +139,4 @@ return {gold: my_bid, desiredTile: wanted_tile};
   //this.highlightTile(tile);
   //this.debug('isEnemyBelow: ', isEnemyBelow(tile));
 //}
+// VERSION 2.1
