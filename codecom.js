@@ -59,23 +59,23 @@ var isInTargetRows = function(tile) {
   }
 };
 
-var getTile = this.getTile;
+var this_getTile = this.getTile;
 var isWantedTile = function(tile) {
   if(tile.y == 1) {
     // try this.parent?
-    if(getTile(tile.x, 2).owner === null) {
+    if(this_getTile(tile.x, 2).owner === null) {
       return true;
-    } else if(getTile(tile.x, 2).owner == 'humans') {
+    } else if(this_getTile(tile.x, 2).owner == 'humans') {
       return false;
-    } else { // if(getTile(tile.x, 2).owner === 'ogres') {}
+    } else { // if(this_getTile(tile.x, 2).owner === 'ogres') {}
       return true;
     }
   } else if(tile.y == 2) {
-    if(getTile(tile.x, 1).owner === null) {
+    if(this_getTile(tile.x, 1).owner === null) {
       return true;
-    } else if(getTile(tile.x, 1).owner === 'humans') {
+    } else if(this_getTile(tile.x, 1).owner === 'humans') {
       return false;
-    } else { // if(getTile(tile.x, 1).owner === 'ogres') {}
+    } else { // if(this_getTile(tile.x, 1).owner === 'ogres') {}
       return true;
     }
   } else {
@@ -99,7 +99,7 @@ for (i = 0; i < tiles.length; i++) {
   if (tile.owner) continue;  // can't buy a tile that's been bought
 
   this.debug('hi');
-  if(isWantedTile(tile) == true) {
+  if(isWantedTile(tile) === true) {
     wanted_tile = tile;
     break OUTER;
   } else {
@@ -109,7 +109,9 @@ for (i = 0; i < tiles.length; i++) {
 }
 
 /*
-this.turns
+this.turns.length
+this.turns[this.turns.length - 1].ogres
+
 */
 
 // If none of the tiles you want are available, skip this round.
@@ -121,8 +123,18 @@ if(!wanted_tile) {
 // 2. Choose your bid price. You only pay and win the tile if your bid wins.
 
 //var my_bid = Math.floor(1 + Math.random() * 10);
-// very simple for now
-var my_bid = 18;
+//var my_bid = Math.floor(1 + Math.random() * 10);
+var my_bid;
+if(this.myTiles.length < 6) {
+  if(wanted_tile.x == 3) {
+    my_bid = 23;
+  } else {
+    my_bid = 20;
+    }
+} else {
+  my_bid = this.gold;
+}
+// bid 21 unless last turn, bid 2
 
 //////////////////////////////////////////////////////////////////////////////
 // 3. Respond with an object with properties 'gold' and 'desiredTile'.
@@ -139,4 +151,4 @@ return {gold: my_bid, desiredTile: wanted_tile};
   //this.highlightTile(tile);
   //this.debug('isEnemyBelow: ', isEnemyBelow(tile));
 //}
-// VERSION 2.1
+// VERSION 2.1.3
