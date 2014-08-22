@@ -59,27 +59,6 @@ var isInTargetRows = function(tile) {
   }
 };
 
-var isWantedTile = function(tile) {
-  if(tile.y == 1) {
-    if(this.getTile(tile.x, 2).owner === null) {
-      return true;
-    } else if(this.getTile(tile.x, 2).owner == 'humans') {
-      return false;
-    } else { // if(this.getTile(tile.x, 2).owner === 'ogres') {}
-      return true;
-    }
-  } else if(tile.y == 2) {
-    if(this.getTile(tile.x, 1).owner === null) {
-      return true;
-    } else if(this.getTile(tile.x, 1).owner === 'humans') {
-      return false;
-    } else { // if(this.getTile(tile.x, 1).owner === 'ogres') {}
-      return true;
-    }
-  } else {
-    return false;
-  }
-}
   //if(!isInTargetRows(tile)) {
     //return false;
   //}
@@ -109,15 +88,43 @@ for (i = 0; i < tiles.length; i++) {
   tile = tiles[i];
   if (tile.owner) continue;  // can't buy a tile that's been bought
 
-  this.debug('hi');
-  if(isWantedTile(tile) == true) {
-    wanted_tile = tile;
-    break OUTER;
+  if(tile.y == 1) {
+    if(this.getTile(tile.x, 2).owner === null) {
+      wanted_tile = tile;
+      break OUTER;
+    } else if(this.getTile(tile.x, 2).owner == 'humans') {
+      this.highlightTile(tile);
+    } else { // if(this.getTile(tile.x, 2).owner === 'ogres') {}
+      wanted_tile = tile;
+      break OUTER;
+    }
+  } else if(tile.y == 2) {
+    if(this.getTile(tile.x, 1).owner === null) {
+      wanted_tile = tile;
+      break OUTER;
+    } else if(this.getTile(tile.x, 1).owner === 'humans') {
+      this.highlightTile(tile);
+    } else { // if(this.getTile(tile.x, 1).owner === 'ogres') {}
+      wanted_tile = tile;
+      break OUTER;
+    }
   } else {
     this.highlightTile(tile);
   }
+
+  //this.debug('hi');
+  //if(isWantedTile(tile) == true) {
+    //wanted_tile = tile;
+    //break OUTER;
+  //} else {
+    //this.highlightTile(tile);
+  //}
+
 }
 
+/*
+
+*/
 
 // If none of the tiles you want are available, skip this round.
 if(!wanted_tile) {
