@@ -23,6 +23,7 @@ var tiles = this.tileGroups[tileGroupLetter];  // tiles available this turn
 var wanted_tile = null;
 var tile, coordinates, i, j;
 var k;
+var my_bid = null;
 
 /**
  * returns true if same col, false if not
@@ -68,6 +69,9 @@ var isWantedTile = function(tile) {
     } else if(this_getTile(tile.x, 2).owner == 'humans') {
       return false;
     } else { // if(this_getTile(tile.x, 2).owner === 'ogres') {}
+      // essential to get this square:
+      // bid high
+      my_bid = 22;
       return true;
     }
   } else if(tile.y == 2) {
@@ -76,6 +80,7 @@ var isWantedTile = function(tile) {
     } else if(this_getTile(tile.x, 1).owner === 'humans') {
       return false;
     } else { // if(this_getTile(tile.x, 1).owner === 'ogres') {}
+      my_bid = 22;
       return true;
     }
   } else {
@@ -122,15 +127,14 @@ if(!wanted_tile) {
 //////////////////////////////////////////////////////////////////////////////
 // 2. Choose your bid price. You only pay and win the tile if your bid wins.
 
-//var my_bid = Math.floor(1 + Math.random() * 10);
-//var my_bid = Math.floor(1 + Math.random() * 10);
-var my_bid;
 if(this.myTiles.length < 6) {
-  if(wanted_tile.x == 3) {
-    my_bid = 23;
-  } else {
-    my_bid = 20;
+  if(my_bid === null) {
+    if(wanted_tile.x == 3) {
+      my_bid = 22; // for specific enemy
+    } else {
+      my_bid = 21;
     }
+  }
 } else {
   my_bid = this.gold;
 }
@@ -151,4 +155,4 @@ return {gold: my_bid, desiredTile: wanted_tile};
   //this.highlightTile(tile);
   //this.debug('isEnemyBelow: ', isEnemyBelow(tile));
 //}
-// VERSION 2.1.3
+// VERSION 2.1.4
