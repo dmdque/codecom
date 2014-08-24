@@ -50,7 +50,6 @@ var closestRight = function(my_tiles, current_tile) {
   my_tiles.forEach(function(tile) {
     if(current_tile.x < tile.x && tile.x < min) {
       min = tile.x;
-      highlightTile(tile);
     }
   });
   return min;
@@ -64,9 +63,9 @@ var grid = [ [0, 0, 0, 0, 0, 0, 0] , [0, 0, 0, 0, 0, 0, 0] , [0, 0, 0, 0, 0, 0, 
 var propagateLeft = function(tile) {
   var left_bound = closestLeft(my_tiles, tile);
   for(var j = -1; tile.x + j > left_bound; j--) {
-    debug('left tile.x + j: ', tile.x + j);
     grid[tile.x + j][tile.y] += 2;
-    for(var k = -1; k > j; k--) {
+    for(var k = -1; k > -2; k--) {
+    //for(var k = -1; k > j; k--) {}
       if(tile.y + k < 7) {
         grid[tile.x + j][tile.y + k] += 1;
       }
@@ -83,7 +82,8 @@ var propagateRight = function(tile) {
   for(var j = 1; tile.x + j < right_bound; j++) {
     debug('right tile.x + j: ', tile.x + j);
     grid[tile.x + j][tile.y] += 2;
-    for(var k = 1; k <= j; k++) {
+    for(var k = 1; k <= 1; k++) {
+    //for(var k = 1; k <= j; k++) {}
       if(tile.y + k < 7) {
         grid[tile.x + j][tile.y + k] += 1;
       }
@@ -178,11 +178,8 @@ var my_tiles = this.myTiles;
 
 for(i = 0; i < my_tiles.length; i++) {
   tile = my_tiles[i];
-  if(tile.owner == 'humans') {
-    highlightTile(tile);
-    propagateRight(tile);
-    propagateLeft(tile);
-  }
+  propagateRight(tile);
+  propagateLeft(tile);
 }
 
 var highest_value = -1;
@@ -238,7 +235,17 @@ if(!wanted_tile) {
   //my_bid = this.gold;
 //}
 // bid 21 unless last turn, bid 2
-my_bid = 12;
+
+if(this.myTiles.length === 0) {
+  my_bid = 8;
+} else {
+  if(highest_value === 0) {
+    return null;
+    //my_bid = 1;
+  } else {
+    my_bid = 20;
+  }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // 3. Respond with an object with properties 'gold' and 'desiredTile'.
@@ -255,4 +262,4 @@ return {gold: my_bid, desiredTile: wanted_tile};
   //this.highlightTile(tile);
   //this.debug('isEnemyBelow: ', isEnemyBelow(tile));
 //}
-// VERSION 3.0.3
+// VERSION 3.1.0
