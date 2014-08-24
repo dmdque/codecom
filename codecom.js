@@ -186,7 +186,7 @@ var highest_value = -1;
 for(i = 0; i < tiles.length; i++) {
   tile = tiles[i];
   if(tile.owner) { continue; } // can't buy a tile that's been bought
-  if(grid[tile.x][tile.y] > highest_value) {
+  if(grid[tile.x][tile.y] >= highest_value) {
     this.highlightTile(tile);
     highest_value = grid[tile.x][tile.y];
     wanted_tile = tile;
@@ -236,16 +236,33 @@ if(!wanted_tile) {
 //}
 // bid 21 unless last turn, bid 2
 
+
+//TODO: turn into function
+var bid_strat1 = [21, 21, 21, 21, 21, 21, 2];
+var bid_strat2 = [20, 20, 20, 20, 20, 20, 8];
+var bid_strat3 = [8, 20, 20, 20, 20, 20, 20];
+var bid_strats = [bid_strat1, bid_strat2, bid_strat3];
+
 if(this.myTiles.length === 0) {
-  my_bid = 8;
+  my_bid = bid_strats[this.round % 3][this.myTiles.length];
 } else {
   if(highest_value === 0) {
     return null;
-    //my_bid = 1;
   } else {
-    my_bid = 20;
+    my_bid = bid_strats[this.round % 3][this.myTiles.length];
   }
 }
+
+//if(this.myTiles.length === 0) {
+  //my_bid = 8;
+//} else {
+  //if(highest_value === 0) {
+    //return null;
+    ////my_bid = 1;
+  //} else {
+    //my_bid = 20;
+  //}
+//}
 
 //////////////////////////////////////////////////////////////////////////////
 // 3. Respond with an object with properties 'gold' and 'desiredTile'.
@@ -262,4 +279,4 @@ return {gold: my_bid, desiredTile: wanted_tile};
   //this.highlightTile(tile);
   //this.debug('isEnemyBelow: ', isEnemyBelow(tile));
 //}
-// VERSION 3.1.0
+// VERSION 3.1.2
