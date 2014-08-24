@@ -176,16 +176,29 @@ var my_tiles = this.myTiles;
 
 // main
 
-for(i = 0; i < my_tiles.length; i++) {
-  tile = my_tiles[i];
-  propagateRight(tile);
-  propagateLeft(tile);
+var createImportanceGrid = function() {
+  for(i = 0; i < my_tiles.length; i++) {
+    tile = my_tiles[i];
+    propagateRight(tile);
+    propagateLeft(tile);
+  }
+}
+createImportanceGrid();
+
+// TODO: move into own function
+var pickBestTile = function() {
 }
 
+//TODO: // to try: if I have 2 or more tiles, score must be 2 or greater to want
+// (maybe 3 or greater)
 var highest_value = -1;
+if(this.myTiles.length >= 2) {
+  highest_value = 2;
+}
 for(i = 0; i < tiles.length; i++) {
   tile = tiles[i];
   if(tile.owner) { continue; } // can't buy a tile that's been bought
+  if(tile.y < 2 || tile.y > 4) { continue; } // limit to middle three
   if(grid[tile.x][tile.y] >= highest_value) {
     this.highlightTile(tile);
     highest_value = grid[tile.x][tile.y];
@@ -276,7 +289,7 @@ return {gold: my_bid, desiredTile: wanted_tile};
 // TESTS
 // isEnemyBelow test
 //var isEnemyBelowTest = function(tile) {
-  //this.highlightTile(tile);
+  //this.highlissssssssssssssssssssssssssshtTile(tile);
   //this.debug('isEnemyBelow: ', isEnemyBelow(tile));
 //}
-// VERSION 3.1.2
+// VERSION 3.1.3
