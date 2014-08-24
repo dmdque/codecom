@@ -63,14 +63,17 @@ var grid = [ [0, 0, 0, 0, 0, 0, 0] , [0, 0, 0, 0, 0, 0, 0] , [0, 0, 0, 0, 0, 0, 
 var propagateLeft = function(tile) {
   var left_bound = closestLeft(my_tiles, tile);
   for(var j = -1; tile.x + j > left_bound; j--) {
-    grid[tile.x + j][tile.y] += 2;
-    for(var k = -1; k > -2; k--) {
-    //for(var k = -1; k > j; k--) {}
+    var points = 4;
+    grid[tile.x + j][tile.y] += points;
+    points--;
+    //for(var k = -1; k >= -1 && points > 0; k--) {
+    for(var k = -1; k >= j && points; k--) {
+      points--;
       if(tile.y + k < 7) {
-        grid[tile.x + j][tile.y + k] += 1;
+        grid[tile.x + j][tile.y + k] += points;
       }
       if(tile.y - k >= 0) {
-        grid[tile.x + j][tile.y - k] += 1;
+        grid[tile.x + j][tile.y - k] += points;
       }
     }
   }
@@ -81,14 +84,17 @@ var propagateRight = function(tile) {
   var right_bound = closestRight(my_tiles, tile);
   for(var j = 1; tile.x + j < right_bound; j++) {
     debug('right tile.x + j: ', tile.x + j);
-    grid[tile.x + j][tile.y] += 2;
-    for(var k = 1; k <= 1; k++) {
-    //for(var k = 1; k <= j; k++) {}
+    var points = 4;
+    grid[tile.x + j][tile.y] += points;
+    points--;
+    //for(var k = 1; k <= 1 && points; k++) {
+    for(var k = 1; k <= j && points; k++) {
+      points--;
       if(tile.y + k < 7) {
-        grid[tile.x + j][tile.y + k] += 1;
+        grid[tile.x + j][tile.y + k] += points;
       }
       if(tile.y - k >= 0) {
-        grid[tile.x + j][tile.y - k] += 1;
+        grid[tile.x + j][tile.y - k] += points;
       }
     }
   }
@@ -182,29 +188,35 @@ var createImportanceGrid = function() {
     propagateRight(tile);
     propagateLeft(tile);
   }
-}
-createImportanceGrid();
+};
 
-// TODO: move into own function
+var highest_value;
+/**
+ * returns wanted tile and sets highest value to the tile's value
+ */
 var pickBestTile = function() {
-}
-
-//TODO: // to try: if I have 2 or more tiles, score must be 2 or greater to want
-// (maybe 3 or greater)
-var highest_value = -1;
-if(this.myTiles.length >= 2) {
-  highest_value = 2;
-}
-for(i = 0; i < tiles.length; i++) {
-  tile = tiles[i];
-  if(tile.owner) { continue; } // can't buy a tile that's been bought
-  if(tile.y < 2 || tile.y > 4) { continue; } // limit to middle three
-  if(grid[tile.x][tile.y] >= highest_value) {
-    this.highlightTile(tile);
-    highest_value = grid[tile.x][tile.y];
-    wanted_tile = tile;
+  //TODO: // to try: if I have 2 or more tiles, score must be 2 or greater to want
+  // (maybe 3 or greater)
+  highest_value = -1;
+  if(my_tiles.length >= 1) {
+    highest_value = 4;
   }
-}
+  for(i = 0; i < tiles.length; i++) {
+    tile = tiles[i];
+    if(tile.owner) { continue; } // can't buy a tile that's been bought
+    // can take this out with new >=2 limit
+    //if(tile.y < 2 || tile.y > 4) { continue; } // limit to middle three
+    if(grid[tile.x][tile.y] >= highest_value) {
+      highlightTile(tile);
+      highest_value = grid[tile.x][tile.y];
+      wanted_tile = tile;
+    }
+  }
+  return wanted_tile;
+};
+
+createImportanceGrid();
+wanted_tile = pickBestTile();
 this.debug('highest_value: ', highest_value);
 
 //OUTER:
@@ -252,12 +264,14 @@ if(!wanted_tile) {
 
 //TODO: turn into function
 var bid_strat1 = [21, 21, 21, 21, 21, 21, 2];
-var bid_strat2 = [20, 20, 20, 20, 20, 20, 8];
-var bid_strat3 = [8, 20, 20, 20, 20, 20, 20];
-var bid_strats = [bid_strat1, bid_strat2, bid_strat3];
+var bid_strat2 = [18, 18, 18, 18, 18, 19, 19];
+var bid_strat3 = [20, 20, 20, 20, 20, 20, 8];
+var bid_strat4 = [8, 20, 20, 20, 20, 20, 20];
+var bid_strats = [bid_strat1, bid_strat2, bid_strat3, bid_strat4];
+//var strat_num = Math.floor(Math.random() * 4);
 
 if(this.myTiles.length === 0) {
-  my_bid = bid_strats[this.round % 3][this.myTiles.length];
+  my_bid = bid_strats[this.round % 4][this.myTiles.length];
 } else {
   if(highest_value === 0) {
     return null;
