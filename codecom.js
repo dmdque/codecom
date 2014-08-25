@@ -265,13 +265,16 @@ if(!wanted_tile) {
 //TODO: turn into function
 var bid_strat1 = [21, 21, 21, 21, 21, 21, 2];
 var bid_strat2 = [18, 18, 18, 18, 18, 19, 19];
-var bid_strat3 = [20, 20, 20, 20, 20, 20, 8];
-var bid_strat4 = [8, 20, 20, 20, 20, 20, 20];
-var bid_strats = [bid_strat1, bid_strat2, bid_strat3, bid_strat4];
+var bid_strat3 = [17, 17, 17, 17, 17, 17, 26];
+var bid_strat4 = [17, 17, 17, 17, 17, 17, 26];
+var bid_strat5 = [17, 17, 17, 17, 17, 17, 26];
+var bid_strat6 = [20, 20, 20, 20, 20, 20, 8];
+var bid_strat7 = [8, 20, 20, 20, 20, 20, 20];
+var bid_strats = [bid_strat1, bid_strat2, bid_strat3, bid_strat4, bid_strat5, bid_strat6, bid_strat7];
 //var strat_num = Math.floor(Math.random() * 4);
 
 if(this.myTiles.length === 0) {
-  my_bid = bid_strats[this.round % 4][this.myTiles.length];
+  my_bid = bid_strats[this.round % 7][this.myTiles.length];
 } else {
   if(highest_value === 0) {
     return null;
@@ -279,6 +282,82 @@ if(this.myTiles.length === 0) {
     my_bid = bid_strats[this.round % 3][this.myTiles.length];
   }
 }
+
+
+// need to improve bidding strategy
+// look to what they're doing, and bid responsively
+// 
+
+// detect if enemy is about to win
+
+/*
+check each row
+check if two rows are connected
+if not, check if a valid play could connect them
+
+*/
+var opponent_tiles = this.opponentTiles;
+var checkOppoonentclose = function(opponent_tiles) {
+  var current_tiles;
+  var lifeboat = null;
+
+
+
+  // try to get to the other side
+  // with one lifeboat allowed
+  // find a tile with row = 0, col = *
+  for(var row = 0; row < 7; row++) {
+  }
+}
+
+
+// note that it's possible to have multiple lifeboats that solve the path
+// this doesn't account for cases with 'redundant' but neessary tiles
+var step = function(current_tile, lifeboat) {
+  var row = current_tile.y + 1;
+  var col = current_tile.x;
+  if(row === 7) {
+    // got to the other side
+    return {finished: true, lifeboat: lifeboat};
+  }
+  var current_tiles = opponent_tiles.filter(function(tile) {
+    if(row === 0) {
+      if(tile.y == row) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if(tile.y == row && (tile.x == col - 1 || tile.x == col || tile.x == col + 1)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  });
+  if(current_tiles == []) {
+    if(lifeboat === null) {
+      current_tiles.push({x: col - 1, y: row});
+      current_tiles.push({x: col, y: row});
+      current_tiles.push({x: col + 1, y: row});
+    }
+  } else {
+    // at least two holes
+    return false; // no path
+  }
+  var problems = [];
+  var return_val = false;
+  current_tiles.forEach(function(tile) {
+    var boat = step(file, lifeboat);
+    if(boat.finished == true) {
+      problems.push(boat);
+    } else if(boat.finished == 'pass') {
+      return boat;
+    }
+  });
+  return {finished: 'pass', lifeboats: problems};
+}
+debug(step({x: 0, y: -1}, null));
 
 //if(this.myTiles.length === 0) {
   //my_bid = 8;
